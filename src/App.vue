@@ -1,25 +1,47 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+    <el-container>
+        <el-header>
+          抽奖后台管理系统
+          <el-button type="danger" class="bt" style="width:120px;">退出系统</el-button>
+        </el-header>
+        <el-container>
+          <Aside></Aside>
+          <Main></Main>
+        </el-container>
+</el-container>
 </template>
-<style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
 
-#nav
-  padding 30px
-  a
-    font-weight bold
-    color #2c3e50
-    &.router-link-exact-active
-      color #42b983
+<script>
+import Main from '@/components/Main'
+import Aside from '@/components/Aside'
+export default {
+  components: {
+    Main,
+    Aside
+  }
+}
+</script>
+
+<style> 
+  .el-header {
+    background-color: powderblue;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+    position: relative;
+  }
+
+  .el-header .bt{
+    position:absolute;
+    right:0;
+    bottom:0;
+  }
+  
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  
+  
+  
 </style>
