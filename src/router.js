@@ -19,7 +19,7 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import( '@/components/Lottery/index.vue')
+      component: () => import( '@/views/Lottery/index.vue')
     },
     {
       path: '/winning',
@@ -27,7 +27,7 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/components/Winning')
+      component: () => import('@/views/Winning')
     },
     {
       path: '/system',
@@ -35,7 +35,7 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/components/System')
+      component: () => import('@/views/System')
     },
     {
       path: '/login',
@@ -43,7 +43,11 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/components/Login')
+      component: () => import('@/views/Login')
+    },
+    {
+      path: '/',
+      redirect: '/Login'
     }
   ]
 })
