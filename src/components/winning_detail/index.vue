@@ -177,6 +177,7 @@ import pop from '@/components/pop'
           pagination: 1,
           status: 1
       }).then((res)=>{
+          this.res = res.data.data;
           var msg = res.data.msg;
           if(msg === '查询成功') {
             this.tableData = res.data.data.data;
@@ -194,6 +195,7 @@ import pop from '@/components/pop'
         status: 1
       }).then((res)=>{
           var msg = res.data.msg;
+          this.res = res.data.data;
           if(msg === '查询成功') {
             this.tableData = res.data.data.data;
             this.loading_d = false;
@@ -282,22 +284,6 @@ import pop from '@/components/pop'
     left: 50px;
     z-index: 100;
 }
-/* .lottery-wrapper .pop .title {
-    height: 60px;
-}
-
-.lottery-wrapper .pop .tow-bt {
-    margin-top: 60px;
-}
-
-.lottery-wrapper .pop .table .el-table__header th, .table .el-table__header tr {
-    background-color: whitesmoke;
-}
-
-.lottery-wrapper .pop .table .el-table__body tr,.table .el-table__body td {
-    background-color: whitesmoke;
-} */
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity ease .3s;
 }
