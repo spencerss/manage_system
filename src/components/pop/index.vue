@@ -98,7 +98,7 @@ export default {
               'Content-type': 'application/json'
           },
           data: {
-              "order_id_list": qs.stringify({order_id_list: [2]},{indices:false})
+              order_id_list: qs.stringify([2],{indices:false})
           }
        }).then((res) => {
               console.log(res);
@@ -122,6 +122,7 @@ export default {
 
 .wrapper .tow-bt {
     margin-top: 60px;
+    background-color: whitesmoke;
 }
 
 .wrapper .table .el-table__header th, .table .el-table__header tr {
