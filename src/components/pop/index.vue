@@ -132,4 +132,7 @@ export default {
 .wrapper .table .el-table__body tr,.table .el-table__body td {
     background-color: whitesmoke;
 }
+.el-table__body td,.el-table__header th {
+       text-align: center;
+  }
 </style>

@@ -271,4 +271,7 @@ import pop from '@/components/pop'
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+.el-table__body td,.el-table__header th {
+       text-align: center;
+  }
 </style>

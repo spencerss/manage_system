@@ -131,4 +131,7 @@
 .lottery-wrapper .el-pagination {
   margin-top: 100px;
 }
+.el-table__body td,.el-table__header th {
+       text-align: center;
+  }
 </style>
