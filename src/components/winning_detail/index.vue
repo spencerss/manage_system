@@ -22,7 +22,7 @@
   <!-- 表格 -->
   <el-table
     ref="singleTable"
-    :data="tableData"
+    :data="nowTableData"
     highlight-current-row
     v-loading="loading_d"
     style="width: 100%;">
@@ -212,25 +212,6 @@ import pop from '@/components/pop'
           this.popData = res.data.data.data;
         }
       });
-
-      //  this.axios({
-      //     method: 'post',
-      //     url: '/dc/order/setWinOrder',
-      //     headers: {
-      //         'Content-type': 'application/json'
-      //     },
-      //     params: {
-      //         "order_id_list": [
-      //             1,2,3
-      //         ]
-      //     }
-      //  }).then((res) => {
-      //         console.log(res);
-      //     })
-      //     .catch((error) => {
-      //         console.log(error);
-      //     }
-      // );
     }
   }
 

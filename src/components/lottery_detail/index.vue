@@ -31,7 +31,6 @@
       <template slot-scope="scope">
         <img :src='tableData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
         <span style="position:relative;top: -22px;">{{tableData[scope.$index].user_name}}</span>
-        <span style="position:relative;top: -22px;">中奖啦!</span>
       </template>
     </el-table-column>
     <el-table-column
