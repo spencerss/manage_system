@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header>
-          抽奖后台管理系统
+          <span style="font-size:20px;font-weight:bold;">抽奖后台管理系统</span>
           <el-button type="danger" class="bt" style="width:120px;">退出系统</el-button>
         </el-header>
         <el-container>
@@ -31,6 +31,7 @@ export default {
     text-align: center;
     line-height: 60px;
     position: relative;
+    height: 65px!important;
   }
 
   .el-header .bt{

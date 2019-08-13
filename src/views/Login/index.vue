@@ -2,23 +2,39 @@
     <div>
 		<div class="box">
 			<h2>抽奖后台管理系统</h2>
-			<form action="" method="post">
-				<h3><i class="iconfont icon-yonghu"></i><input type="text" /></h3>
-				<h3><i class="iconfont icon-mima"></i><input type="password" /></h3>
-				<input type="submit" class="submit" value="登录" />
-			</form>
+				<h3><i class="iconfont icon-yonghu"></i><input type="text" v-model="username"/></h3>
+				<h3><i class="iconfont icon-mima"></i><input type="password" v-model="password"/></h3>
+				<input type="submit" class="submit" value="登录" @click="handelToClick"/>
 		</div>
     </div>
 </template>
 
 <script>
 export default {
-
+	data () {
+		return {
+			username: '',
+			password: ''
+		}
+	},
+   methods: {
+	   handelToClick() {
+		   this.axios.post('/dc/login/login',{
+			user_name: this.username,
+			password: this.password
+		    }).then((res)=>{
+				let code = res.data.code;
+				if(code==10000) {
+					this.$router.push('/Lottery');
+				}
+		    });
+	   }
+   }
 }
 </script>
 <style>
 body {
-	height: 70%;
+	overflow: hidden; 
 }
         
 .box{

@@ -69,12 +69,10 @@
     }
   }
 </script>
-</script>
 
 <style>
   .el-table__body th, .el-table__body tr {
 
-      color: red;
   }
   .el-table__body td,.el-table__header th {
        text-align: center;

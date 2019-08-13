@@ -1,21 +1,5 @@
 <template>
 <div class="lottery-wrapper">
-
-  <!-- <el-row class="top" type="flex">
-    <el-col :span="1"><span class="word">第</span></el-col>
-    <el-col :span="2">
-      <el-select v-model="value" placeholder="1" style="width:55px; height:25px">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      </el-col>
-    <el-col :span="1"><span class="word">期</span></el-col>
-    <el-col :span="2"><span class="text">共参与200人</span></el-col>
-  </el-row> -->
   <div class="top">
       <span class="word">第</span>
       <el-select v-model="value" placeholder="1" style="width:55px; height:25px">
@@ -29,21 +13,57 @@
       <span class="word">期</span>
       <span class="text">共参与200人</span>
   </div>
-  <Table/>
+   <el-table
+    ref="singleTable"
+    :data="nowTableData"
+    highlight-current-row
+    @current-change="handleCurrentChange"
+    style="width: 100%;">
+    <el-table-column
+      type="index"
+      label="序号"
+      width="50">
+    </el-table-column>
+    <el-table-column
+      property="user_name"
+      label="姓名"
+      width="220">
+      <template slot-scope="scope">
+        <img :src='tableData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <span style="position:relative;top: -22px;">{{tableData[scope.$index].user_name}}</span>
+        <span style="position:relative;top: -22px;">中奖啦!</span>
+      </template>
+    </el-table-column>
+    <el-table-column
+      property="user_phone"
+      label="电话">
+    </el-table-column>
+    <el-table-column
+      property="user_team"
+      label="团队">
+    </el-table-column>
+    <el-table-column
+      property="create_time"
+      label="参与时间">
+    </el-table-column>
+  </el-table>
 
-  <el-pagination
+   <el-pagination
   background
   layout="prev, pager, next"
-  :total="1000">
+  :page-size="pageSize"
+  :current-page.sync="currentPage"
+  :total="tableData.length">
   </el-pagination>
 </div>
 </template>
 
 <script>
-import Table from '@/components/Table'
   export default {
     data() {
       return {
+        currentPage: 1,
+        pageSize: 20,
         options: [{
           value: '选项1',
           label: '1'
@@ -60,12 +80,31 @@ import Table from '@/components/Table'
           value: '选项5',
           label: '5'
         }],
-        value: ''
+        value: '',
+        tableData: [{ 
+          user_name: '王小虎',
+          user_phone: '1',
+          user_team: '1',
+          create_time: '1'
+        }, {
+          user_name: '王小虎',
+          user_phone: '',
+          user_team: '2',
+          create_time: ''
+        }, {
+          user_name: '王小虎',
+          user_phone: '',
+          iuser_team: '3',
+          create_time: ''
+        }],
       }
     },
-    components: {
-      Table
-    }
+    computed: {
+      nowTableData(){
+        return this.tableData.slice((this.currentPage - 1)*this.pageSize,this.currentPage*this.pageSize)||[];
+      }
+    },
+    
   }
 </script>
 

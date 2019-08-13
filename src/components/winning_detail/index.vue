@@ -3,26 +3,63 @@
   <div class="top">
       <span class="word">第</span>
       <el-select v-model="value" placeholder="1" style="width:55px; height:30px">
-        <el-option
+        <el-option-group>
+          <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
           :value="item.value">
         </el-option>
+        </el-option-group>
       </el-select>
       <span class="word">期</span>
-      <span class="text">中奖15人</span>
+      <span class="text">中奖{{res.total}}人</span>
       <el-button type="success" style="width:150px;" class="bt" @click="handelclick">
           <i class="iconfont icon-tianjia"></i>
           <span class="bt-text">新增中奖人员</span>
       </el-button>
   </div>
-  <Table/>
+  <!-- 表格 -->
+  <el-table
+    ref="singleTable"
+    :data="tableData"
+    highlight-current-row
+    style="width: 100%;">
+    <el-table-column
+      type="index"
+      label="序号"
+      width="50">
+    </el-table-column>
+    <el-table-column
+      property="user_name"
+      label="姓名"
+      width="220">
+      <template slot-scope="scope">
+        <img :src='tableData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <span style="position:relative;top: -22px;">{{tableData[scope.$index].user_name}}</span>
+        <span style="position:relative;top: -22px;">中奖啦!</span>
+      </template>
+    </el-table-column>
+    <el-table-column
+      property="user_phone"
+      label="电话">
+    </el-table-column>
+    <el-table-column
+      property="user_team"
+      label="团队">
+    </el-table-column>
+    <el-table-column
+      property="create_time"
+      label="参与时间">
+    </el-table-column>
+  </el-table>
 
   <el-pagination
   background
   layout="prev, pager, next"
-  :total="1000">
+  :page-size="pageSize"
+  :current-page.sync="currentPage"
+  :total="tableData.length">
   </el-pagination>
 
   <el-button type="success" style="width:300px;">
@@ -31,61 +68,158 @@
   <el-button type="primary" style="width:300px;">
       一键通知该期中奖人员
   </el-button>
-  <div class="pop" v-if="flag">
-    <div class="title">
-        <h3 class="r">新增中奖人员</h3>
-    </div>
-   <el-input
-        placeholder="请输入内容"
-        v-model="input4"
-        style="width:300px;">
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-   </el-input>
-    <el-button type="primary">搜索</el-button>
-    <Table></Table>
-    <div class="tow-bt">
-    <el-button type="success" style="width:300px;">确定</el-button>
-    <el-button type="danger" style="width:300px;" @click="handelclick">取消</el-button>
-    </div>
+  <transition name="fade">
+  <div class="pop" v-show="flag">
+    <pop :popData="popData" :loading="loading" @cancle="cancle"/>
   </div>
+  </transition>
 </div>
 
 </template>
 
 <script>
-import Table from '@/components/Table'
+import pop from '@/components/pop'
   export default {
     data() {
       return {
         flag:false,
+        input4: '',
+        currentPage: 1,
+        pageSize: 20,
+        checkList: [''],
+        res: {},
         options: [{
-          value: '选项1',
-          label: '2'
+          value: 1,
+          label: 1
         }, {
-          value: '选项2',
-          label: '3'
+          value: 2,
+          label: 2
         }, {
-          value: '选项3',
-          label: '4'
+          value: 3,
+          label: 3
         }, {
-          value: '选项4',
-          label: '5'
+          value: 4,
+          label: 4
         }, {
-          value: '选项5',
-          label: '6'
+          value: 5,
+          label: 5
         }],
-        value: ''
+        value: 1,
+        tableData: [{ 
+          user_name: '',
+          user_phone: '',
+          user_team: '',
+          create_time: ''
+        }],
+        popData:[],
+        currentRow: null,
+        multipleSelection: [],
+        loading: true
       }
     },
+  
     components: {
-      Table
+      pop
     },
     methods: {
         handelclick() {
-            this.flag = !this.flag;
+          this.flag = !this.flag;
+          this.axios.post('/dc/issue/getOrderListByIssueID',{
+            issue_id: this.value,
+            pagination: 1,
+            status: 0
+          }).then((res)=>{
+            this.res = res.data.data;
+            this.popData = res.data.data.data;
+            console.log(this.res);
+            this.loading = false;
+          });
+        },
+        cancle() {
+          this.flag = !this.flag;
+        },
+        checkBoxChange(val){
+          if(this.checkList.indexof(val) > -1){
+            this.checkList = [];
+            this.checkList.push(val);
+          }
+        },
+
+            toggleSelection(rows) {
+            if (rows) {
+              rows.forEach(row => {
+                this.$refs.multipleTable.toggleRowSelection(row);
+              });
+            } else {
+              this.$refs.multipleTable.clearSelection();
+            }
+          },
+          handleSelectionChange(val) {
+            this.multipleSelection = val;
+          }
+        
+    },
+
+    computed: {
+      nowTableData(){
+        return this.tableData.slice((this.currentPage - 1)*this.pageSize,this.currentPage*this.pageSize)||[];
+      }
+    },
+
+    watch: {
+      value: function(n,o) {
+          this.axios.post('/dc/issue/getOrderListByIssueID',{
+          issue_id: n,
+          pagination: 1,
+          status: 1
+      }).then((res)=>{
+          this.tableData = res.data.data.data;
+          this.res = res.data.data;
+      });
         }
+      
+    },
+
+    created () {
+      this.axios.post('/dc/issue/getOrderListByIssueID',{
+        issue_id: this.value,
+        pagination: 1,
+        status: 1
+      }).then((res)=>{
+        this.tableData = res.data.data.data;
+        this.res = res.data.data;
+      });
+
+      this.axios.post('/dc/issue/getOrderListByIssueID',{
+        issue_id: this.value,
+        pagination: 1,
+        status: 0
+      }).then((res)=>{
+        this.popData = res.data.data.data;
+        this.res = res.data.data;
+      });
+
+      //  this.axios({
+      //     method: 'post',
+      //     url: '/dc/order/setWinOrder',
+      //     headers: {
+      //         'Content-type': 'application/json'
+      //     },
+      //     params: {
+      //         "order_id_list": [
+      //             1,2,3
+      //         ]
+      //     }
+      //  }).then((res) => {
+      //         console.log(res);
+      //     })
+      //     .catch((error) => {
+      //         console.log(error);
+      //     }
+      // );
     }
   }
+
 </script>
 </script>
 
@@ -127,20 +261,35 @@ import Table from '@/components/Table'
 .wrapper {
     position:relative;
 }
-.pop {
-    width: 950px;
-    height: 600px;
+.lottery-wrapper .pop {
+    width: 90%;
+    height: 130%;
     background-color:whitesmoke;
     position: absolute;
     top: 0px;
     left: 50px;
     z-index: 100;
 }
-.pop .title {
+/* .lottery-wrapper .pop .title {
     height: 60px;
 }
 
-.pop .tow-bt {
+.lottery-wrapper .pop .tow-bt {
     margin-top: 60px;
+}
+
+.lottery-wrapper .pop .table .el-table__header th, .table .el-table__header tr {
+    background-color: whitesmoke;
+}
+
+.lottery-wrapper .pop .table .el-table__body tr,.table .el-table__body td {
+    background-color: whitesmoke;
+} */
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity ease .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
