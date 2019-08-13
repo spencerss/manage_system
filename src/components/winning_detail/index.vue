@@ -24,6 +24,7 @@
     ref="singleTable"
     :data="tableData"
     highlight-current-row
+    v-loading="loading_d"
     style="width: 100%;">
     <el-table-column
       type="index"
@@ -114,7 +115,8 @@ import pop from '@/components/pop'
         popData:[],
         currentRow: null,
         multipleSelection: [],
-        loading: true
+        loading: true,
+        loading_d: true
       }
     },
   
@@ -168,13 +170,18 @@ import pop from '@/components/pop'
 
     watch: {
       value: function(n,o) {
+          this.loading = true;
+          this.loading_d = true;
           this.axios.post('/dc/issue/getOrderListByIssueID',{
           issue_id: n,
           pagination: 1,
           status: 1
       }).then((res)=>{
-          this.tableData = res.data.data.data;
-          this.res = res.data.data;
+          var msg = res.data.msg;
+          if(msg === '查询成功') {
+            this.tableData = res.data.data.data;
+            this.loading_d = false;
+          }
       });
         }
       
@@ -186,8 +193,11 @@ import pop from '@/components/pop'
         pagination: 1,
         status: 1
       }).then((res)=>{
-        this.tableData = res.data.data.data;
-        this.res = res.data.data;
+          var msg = res.data.msg;
+          if(msg === '查询成功') {
+            this.tableData = res.data.data.data;
+            this.loading_d = false;
+          }
       });
 
       this.axios.post('/dc/issue/getOrderListByIssueID',{
@@ -195,8 +205,10 @@ import pop from '@/components/pop'
         pagination: 1,
         status: 0
       }).then((res)=>{
-        this.popData = res.data.data.data;
-        this.res = res.data.data;
+          var msg = res.data.msg;
+          if(msg === '查询成功') {
+          this.popData = res.data.data.data;
+        }
       });
 
       //  this.axios({

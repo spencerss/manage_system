@@ -17,7 +17,7 @@
     tooltip-effect="dark"
     style="width: 100%"
     v-loading="loading"
-    @selection-change="handleSelectionChange">
+    @selection-change="handleSelectionChange" class="table">
     <el-table-column
       type="selection"
       width="55">
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   data () {
       return {
@@ -88,6 +89,24 @@ export default {
       sonhandelclick() {
         this.$emit('cancle');
       }
+    },
+    created () {
+       this.axios({
+          method: 'post',
+          url: '/dc/order/setWinOrder',
+          headers: {
+              'Content-type': 'application/json'
+          },
+          data: {
+              "order_id_list": qs.stringify({order_id_list: [2]},{indices:false})
+          }
+       }).then((res) => {
+              console.log(res);
+          })
+          .catch((error) => {
+              console.log(error);
+          }
+      );
     }
 }
 </script>
