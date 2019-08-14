@@ -2,7 +2,7 @@
     <el-container>
         <el-header>
           <span style="font-size:20px;font-weight:bold;">抽奖后台管理系统</span>
-          <el-button type="danger" class="bt" style="width:120px;">退出系统</el-button>
+          <el-button type="danger" class="bt" style="width:120px;" @click="exitSystem">退出系统</el-button>
         </el-header>
         <el-container>
           <Aside></Aside>
