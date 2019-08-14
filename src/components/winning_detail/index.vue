@@ -36,7 +36,7 @@
       label="姓名"
       width="220">
       <template slot-scope="scope">
-        <img :src='tableData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <img :src='tableData[scope.$index].user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
         <span style="position:relative;top: -22px;">{{tableData[scope.$index].user_name}}</span>
         <span style="position:relative;top: -22px;">中奖啦!</span>
       </template>
@@ -63,15 +63,15 @@
   :total="tableData.length">
   </el-pagination>
 
-  <el-button type="success" style="width:300px;">
+  <el-button type="success" style="width:300px;" v-if="false">
       一键通知该期全部用户
   </el-button>  
-  <el-button type="primary" style="width:300px;">
+  <el-button type="primary" style="width:300px;" v-if="false">
       一键通知该期中奖人员
   </el-button>
   <transition name="fade">
   <div class="pop" v-show="flag">
-    <pop :popData="popData" :value="value" :loading="loading" @cancle="cancle"  @handelclick="handelclick"/>
+    <pop :popData="popData" :value="value" :loading="loading" @cancle="cancle"  @handelclick="handelclick" @kison="kison"/>
   </div>
   </transition>
 </div>
@@ -128,21 +128,28 @@ import pop from '@/components/pop'
     methods: {
         handelclick() {
           this.flag = !this.flag;
-          console.log(this.data);
           this.axios.post('/dc/issue/getOrderListByIssueID',{
             issue_id: this.value,
             pagination: 1,
             status: 0
           }).then((ress)=>{
             this.ress = ress.data.data;
-            this.popData = [];
-            ress.data.data.data.forEach((item,index,array) => {
-              if(array[index].status ===0){
-              this.datao.push(array[index]);
-              this.popData = this.datao;
-              this.datao = [];
-            }            
-          });
+            var msg = ress.data.msg;
+            if(msg === '查询成功') {
+                // this.popData = [];
+                ress.data.data.data.forEach((item,index,array) => {
+                  console.log(array);
+                  if(array[index].status === 0){
+                  this.data.push(array[index]);
+                  this.popData = this.data;
+                  
+                  console.log('123');
+                  console.log(this);
+                  }            
+                });
+                  this.data = [];
+                  console.log(ress.data)
+              }
             this.loading = false;
           });
         },
@@ -167,6 +174,22 @@ import pop from '@/components/pop'
           },
           handleSelectionChange(val) {
             this.multipleSelection = val;
+          },
+
+          kison() {
+             this.loading_d = true;
+             this.axios.post('/dc/issue/getOrderListByIssueID',{
+                issue_id: this.value,
+                pagination: 1,
+                status: 1
+                }).then((res)=>{
+                  this.res = res.data.data;
+                  var msg = res.data.msg;
+                  if(msg === '查询成功') {
+                  this.tableData = res.data.data.data;
+                  }                
+                  this.loading_d = false;
+              });
           }
         
     },
@@ -177,6 +200,8 @@ import pop from '@/components/pop'
       }
     },
 
+
+
     watch: {
       value: function(n,o) {
           this.loading = true;
@@ -185,20 +210,15 @@ import pop from '@/components/pop'
           issue_id: n,
           pagination: 1,
           status: 1
-      }).then((res)=>{
-          this.res = res.data.data;
-          var msg = res.data.msg;
-          this.tableData = [];
-          res.data.data.data.forEach((item,index,array) => {
-              if(array[index].status ===1){
-              this.data.push(array[index]);
-              this.tableData = this.data;
-              this.data = [];
-            }            
-          });
-          this.loading_d = false;
-          
-      });
+          }).then((res)=>{
+            this.res = res.data.data;
+            var msg = res.data.msg;
+            if(msg === '查询成功') {
+               this.tableData = res.data.data.data;
+           }            
+            this.loading_d = false;
+            
+        });
         }
       
     },
@@ -212,17 +232,11 @@ import pop from '@/components/pop'
           var msg = res.data.msg;
           this.res = res.data.data;
           if(msg === '查询成功') {
-             this.tableData = [];
-             res.data.data.data.forEach((item,index,array) => {
-               if(array[index].status ===1){
-               this.data.push(array[index]);
-               this.tableData = this.data;
-               this.data = [];
-               }            
-             });
-            this.loading_d = false;
-          }
-      });
+               this.tableData = res.data.data.data;
+          }                    
+          this.loading_d = false;
+          });
+      
 
       this.axios.post('/dc/issue/getOrderListByIssueID',{
         issue_id: this.value,
@@ -231,15 +245,14 @@ import pop from '@/components/pop'
       }).then((ress)=>{
           var msg = ress.data.msg;
           if(msg === '查询成功') {
-            this.popData = [];
-            ress.data.data.data.forEach((item,index,array) => {
+             ress.data.data.data.forEach((item,index,array) => {
                if(array[index].status ===0){
-               this.datao.push(array[index]);
-               this.popData = this.datao;
-               this.datao = [];
-             }            
-          });
-        }
+               this.data.push(array[index]);
+               this.popData = this.data;
+       
+               }            
+             });
+         }
       });
     }
   }
@@ -269,7 +282,7 @@ import pop from '@/components/pop'
   margin:0px 4px;
 }
 .lottery-wrapper .el-pagination {
-  margin-top: 30px;
+  margin-top: 15px;
   line-height: 60px;
 }
 .lottery-wrapper .bt{

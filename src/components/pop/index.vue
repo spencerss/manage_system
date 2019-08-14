@@ -27,19 +27,17 @@
       label="姓名"
       width="220">
       <template slot-scope="scope">
-        <img :src='popData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <img :src='popData[scope.$index].user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
         <span style="position:relative;top: -22px;">{{popData[scope.$index].user_name}}</span>
       </template>
     </el-table-column>
     <el-table-column
       prop="user_phone"
-      label="电话"
-      width="120">
+      label="电话">
     </el-table-column>
     <el-table-column
       prop="user_team"
-      label="团队"
-      width="120">
+      label="团队">
     </el-table-column>
     <el-table-column
       prop="create_time"
@@ -69,7 +67,8 @@ export default {
         }],
         input4:'',
         multipleSelection: [],
-        data: ''
+        dataa: [],
+        str: ''
       }
   },
 
@@ -92,34 +91,32 @@ export default {
         this.$emit('cancle');
       },
       sure() {
-        this.data = [];
-        this.multipleSelection.forEach(function (item,index,array){
-           this.data.push(array[index].order_id).join(',');
+        this.dataa = [];
+        this.multipleSelection.forEach((item,index,array)=>{
+           this.dataa.push(array[index].order_id);
+           this.str = this.dataa.toString();
         });
         this.$emit('handelclick');
-      }
-    },
-
-
-    created () {
-       this.axios({
+        this.$emit('kison');
+        this.axios({
           method: 'post',
           url: '/dc/order/setWinOrder',
           headers: {
               'Content-Type': 'application/json'
           },
           data: {
-              'order_id_list': this.data,
+              'order_id_list': this.str,
               'order_issue_id': this.value
           }
           
-       }).then((res) => {
+         }).then((res) => {
               console.log(res);
-          })
+         })
           .catch((error) => {
               console.log(error);
           }
       );
+      }
     }
 }
 </script>
@@ -134,7 +131,7 @@ export default {
 }
 
 .wrapper .tow-bt {
-    margin-top: 60px;
+    /* margin-top: 60px; */
     background-color: whitesmoke;
 }
 
