@@ -20,6 +20,11 @@ export default {
    components: {
        Aside,
        winning_detail
+   },
+   methods: {
+     exitSystem: function() {
+       this.$router.push('/login');
+     }
    }
 }
 </script>

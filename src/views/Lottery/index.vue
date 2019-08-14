@@ -23,7 +23,6 @@ export default {
    },
    methods: {
      exitSystem: function() {
-       console.log('244');
        this.$router.push('/login');
      }
    }
