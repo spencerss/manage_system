@@ -71,7 +71,7 @@
   </el-button>
   <transition name="fade">
   <div class="pop" v-show="flag">
-    <pop :popData="popData" :loading="loading" @cancle="cancle"/>
+    <pop :popData="popData" :loading="loading" @cancle="cancle"  @handelclick="handelclick"/>
   </div>
   </transition>
 </div>
@@ -130,10 +130,16 @@ import pop from '@/components/pop'
             issue_id: this.value,
             pagination: 1,
             status: 0
-          }).then((res)=>{
-            this.res = res.data.data;
-            this.popData = res.data.data.data;
-            console.log(this.res);
+          }).then((ress)=>{
+            this.ress = ress.data.data;
+            ress.data.data.data.forEach(function (item,index,array){
+               if(array[index].staus ===0){
+               this.popData.push(array[index]);
+            }
+            });
+            if(ress.data.data.data.staus ===0){
+              this.popData = ress.data.data.data;
+            }
             this.loading = false;
           });
         },
@@ -147,12 +153,12 @@ import pop from '@/components/pop'
           }
         },
 
-            toggleSelection(rows) {
-            if (rows) {
-              rows.forEach(row => {
-                this.$refs.multipleTable.toggleRowSelection(row);
-              });
-            } else {
+         toggleSelection(rows) {
+          if (rows) {
+             rows.forEach(row => {
+             this.$refs.multipleTable.toggleRowSelection(row);
+          });
+         } else {
               this.$refs.multipleTable.clearSelection();
             }
           },
@@ -182,6 +188,7 @@ import pop from '@/components/pop'
           if(msg === '查询成功') {
             this.tableData = res.data.data.data;
             this.loading_d = false;
+            console.log(res.data);
           }
       });
         }
@@ -206,10 +213,10 @@ import pop from '@/components/pop'
         issue_id: this.value,
         pagination: 1,
         status: 0
-      }).then((res)=>{
-          var msg = res.data.msg;
+      }).then((ress)=>{
+          var msg = ress.data.msg;
           if(msg === '查询成功') {
-          this.popData = res.data.data.data;
+          this.popData = ress.data.data.data;
         }
       });
     }
@@ -251,7 +258,6 @@ import pop from '@/components/pop'
 }
 .lottery-wrapper .bt .bt-text{
     display: inline-block;
-    transform: translateY(-4px);
 }
 .wrapper {
     position:relative;

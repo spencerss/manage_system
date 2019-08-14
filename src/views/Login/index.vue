@@ -33,9 +33,9 @@ export default {
 }
 </script>
 <style>
-body {
+/* body {
 	overflow: hidden; 
-}
+} */
         
 .box{
 	width: 310px;

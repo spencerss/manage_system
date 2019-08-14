@@ -27,7 +27,7 @@
       label="姓名"
       width="220">
       <template slot-scope="scope">
-        <img :src='tableData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <img :src='popData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
         <span style="position:relative;top: -22px;">{{popData[scope.$index].user_name}}</span>
       </template>
     </el-table-column>
@@ -50,7 +50,7 @@
 
 
     <div class="tow-bt">
-    <el-button type="success" style="width:300px;">确定</el-button>
+    <el-button type="success" style="width:300px;" @click="sure">确定</el-button>
     <el-button type="danger" style="width:300px;" @click="sonhandelclick">取消</el-button>
     </div>
 </div>
@@ -68,13 +68,15 @@ export default {
           create_time: ''
         }],
         input4:'',
+        multipleSelection: [],
+        data: ''
       }
   },
 
-  props: ['popData','loading'],
+  props: ['popData','loading','value'],
 
-   methods: {
-      toggleSelection(rows) {
+  methods: {
+     toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
             this.$refs.multipleTable.toggleRowSelection(row);
@@ -88,18 +90,28 @@ export default {
       },
       sonhandelclick() {
         this.$emit('cancle');
+      },
+      sure() {
+        this.multipleSelection.forEach(function (item,index,array){
+           this.data.push(array[index].order_id).join(',');
+        });
+        this.$emit('handelclick');
       }
     },
+
+
     created () {
        this.axios({
           method: 'post',
           url: '/dc/order/setWinOrder',
           headers: {
-              'Content-type': 'application/json'
+              'Content-Type': 'application/json'
           },
           data: {
-              order_id_list: qs.stringify([2],{indices:false})
+              'order_id_list': this.data,
+              'order_issue_id': this.value
           }
+          
        }).then((res) => {
               console.log(res);
           })
