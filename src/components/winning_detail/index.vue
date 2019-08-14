@@ -71,7 +71,7 @@
   </el-button>
   <transition name="fade">
   <div class="pop" v-show="flag">
-    <pop :popData="popData" :loading="loading" @cancle="cancle"  @handelclick="handelclick"/>
+    <pop :popData="popData" :value="value" :loading="loading" @cancle="cancle"  @handelclick="handelclick"/>
   </div>
   </transition>
 </div>
@@ -116,7 +116,9 @@ import pop from '@/components/pop'
         currentRow: null,
         multipleSelection: [],
         loading: true,
-        loading_d: true
+        loading_d: true,
+        data:[],
+        datao:[]
       }
     },
   
@@ -126,20 +128,21 @@ import pop from '@/components/pop'
     methods: {
         handelclick() {
           this.flag = !this.flag;
+          console.log(this.data);
           this.axios.post('/dc/issue/getOrderListByIssueID',{
             issue_id: this.value,
             pagination: 1,
             status: 0
           }).then((ress)=>{
             this.ress = ress.data.data;
-            ress.data.data.data.forEach(function (item,index,array){
-               if(array[index].staus ===0){
-               this.popData.push(array[index]);
-            }
-            });
-            if(ress.data.data.data.staus ===0){
-              this.popData = ress.data.data.data;
-            }
+            this.popData = [];
+            ress.data.data.data.forEach((item,index,array) => {
+              if(array[index].status ===0){
+              this.datao.push(array[index]);
+              this.popData = this.datao;
+              this.datao = [];
+            }            
+          });
             this.loading = false;
           });
         },
@@ -185,11 +188,16 @@ import pop from '@/components/pop'
       }).then((res)=>{
           this.res = res.data.data;
           var msg = res.data.msg;
-          if(msg === '查询成功') {
-            this.tableData = res.data.data.data;
-            this.loading_d = false;
-            console.log(res.data);
-          }
+          this.tableData = [];
+          res.data.data.data.forEach((item,index,array) => {
+              if(array[index].status ===1){
+              this.data.push(array[index]);
+              this.tableData = this.data;
+              this.data = [];
+            }            
+          });
+          this.loading_d = false;
+          
       });
         }
       
@@ -204,7 +212,14 @@ import pop from '@/components/pop'
           var msg = res.data.msg;
           this.res = res.data.data;
           if(msg === '查询成功') {
-            this.tableData = res.data.data.data;
+             this.tableData = [];
+             res.data.data.data.forEach((item,index,array) => {
+               if(array[index].status ===1){
+               this.data.push(array[index]);
+               this.tableData = this.data;
+               this.data = [];
+               }            
+             });
             this.loading_d = false;
           }
       });
@@ -216,7 +231,14 @@ import pop from '@/components/pop'
       }).then((ress)=>{
           var msg = ress.data.msg;
           if(msg === '查询成功') {
-          this.popData = ress.data.data.data;
+            this.popData = [];
+            ress.data.data.data.forEach((item,index,array) => {
+               if(array[index].status ===0){
+               this.datao.push(array[index]);
+               this.popData = this.datao;
+               this.datao = [];
+             }            
+          });
         }
       });
     }

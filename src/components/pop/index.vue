@@ -92,10 +92,11 @@ export default {
         this.$emit('cancle');
       },
       sure() {
+        this.data = [];
         this.multipleSelection.forEach(function (item,index,array){
            this.data.push(array[index].order_id).join(',');
         });
-        this.$emit('handelclick')
+        this.$emit('handelclick');
       }
     },
 
