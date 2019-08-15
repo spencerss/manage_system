@@ -36,8 +36,8 @@
       label="姓名"
       width="220">
       <template slot-scope="scope">
-        <img :src='tableData[scope.$index].user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
-        <span style="position:relative;top: -22px;">{{tableData[scope.$index].user_name}}</span>
+        <img :src='nowTableData[scope.$index].user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <span style="position:relative;top: -22px;">{{nowTableData[scope.$index].user_name}}</span>
         <span style="position:relative;top: -22px;">中奖啦!</span>
       </template>
     </el-table-column>
@@ -118,7 +118,6 @@ import pop from '@/components/pop'
         loading: true,
         loading_d: true,
         data:[],
-        datao:[]
       }
     },
   
@@ -142,13 +141,9 @@ import pop from '@/components/pop'
                   if(array[index].status === 0){
                   this.data.push(array[index]);
                   this.popData = this.data;
-                  
-                  console.log('123');
-                  console.log(this);
                   }            
                 });
                   this.data = [];
-                  console.log(ress.data)
               }
             this.loading = false;
           });
@@ -238,22 +233,7 @@ import pop from '@/components/pop'
           });
       
 
-      this.axios.post('/dc/issue/getOrderListByIssueID',{
-        issue_id: this.value,
-        pagination: 1,
-        status: 0
-      }).then((ress)=>{
-          var msg = ress.data.msg;
-          if(msg === '查询成功') {
-             ress.data.data.data.forEach((item,index,array) => {
-               if(array[index].status ===0){
-               this.data.push(array[index]);
-               this.popData = this.data;
-       
-               }            
-             });
-         }
-      });
+    
     }
   }
 

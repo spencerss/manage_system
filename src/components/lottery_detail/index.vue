@@ -11,13 +11,13 @@
         </el-option>
       </el-select>
       <span class="word">期</span>
-      <span class="text">共参与200人</span>
+      <span class="text">共参与{{res.total}}人</span>
   </div>
-   <el-table
+  <el-table
     ref="singleTable"
     :data="nowTableData"
     highlight-current-row
-    @current-change="handleCurrentChange"
+    v-loading="loading_d"
     style="width: 100%;">
     <el-table-column
       type="index"
@@ -29,8 +29,8 @@
       label="姓名"
       width="220">
       <template slot-scope="scope">
-        <img :src='tableData.user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
-        <span style="position:relative;top: -22px;">{{tableData[scope.$index].user_name}}</span>
+        <img :src='nowTableData[scope.$index].user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+        <span style="position:relative;top: -22px;">{{nowTableData[scope.$index].user_name}}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -79,23 +79,31 @@
           value: '选项5',
           label: '5'
         }],
-        value: '',
+        value: 1,
+         options: [{
+          value: 1,
+          label: 1
+        }, {
+          value: 2,
+          label: 2
+        }, {
+          value: 3,
+          label: 3
+        }, {
+          value: 4,
+          label: 4
+        }, {
+          value: 5,
+          label: 5
+        }],
         tableData: [{ 
-          user_name: '王小虎',
-          user_phone: '1',
-          user_team: '1',
-          create_time: '1'
-        }, {
-          user_name: '王小虎',
+          user_name: '',
           user_phone: '',
-          user_team: '2',
-          create_time: ''
-        }, {
-          user_name: '王小虎',
-          user_phone: '',
-          iuser_team: '3',
+          user_team: '',
           create_time: ''
         }],
+        loading_d:true,
+        res: {}
       }
     },
     computed: {
@@ -103,6 +111,52 @@
         return this.tableData.slice((this.currentPage - 1)*this.pageSize,this.currentPage*this.pageSize)||[];
       }
     },
+    created () {
+      this.axios.post('/dc/issue/getOrderListByIssueID',{
+        issue_id: this.value,
+        pagination: 1,
+        status: 0
+      }).then((res)=>{
+          var msg = res.data.msg;
+          this.res = res.data.data;
+          if(msg === '查询成功') {
+               this.tableData = res.data.data.data;
+          }                    
+          this.loading_d = false;
+          });
+    },
+
+    watch: {
+      value: function(n,o) {
+          this.loading_d = true;
+          this.axios.post('/dc/issue/getOrderListByIssueID',{
+          issue_id: n,
+          pagination: 1,
+          status: 0
+          }).then((res)=>{
+            this.res = res.data.data;
+            var msg = res.data.msg;
+            if(msg === '查询成功') {
+               this.tableData = res.data.data.data;
+           }            
+            this.loading_d = false;  
+            console.log(this.tableData)       
+        });
+        }
+      
+    },
+
+    methods: {
+       toggleSelection(rows) {
+          if (rows) {
+             rows.forEach(row => {
+             this.$refs.multipleTable.toggleRowSelection(row);
+          });
+         } else {
+              this.$refs.multipleTable.clearSelection();
+            }
+          },
+    }
     
   }
 </script>
