@@ -5,11 +5,46 @@
     </div>
    <el-input
         placeholder="请输入姓名或电话"
-        v-model="input4"
+        v-model="search"
         style="width:300px;">
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
    </el-input>
-    <el-button type="primary">搜索</el-button>
+    <el-button type="primary" @click="Search">搜索</el-button>
+
+       <el-table
+        ref="multipleTable"
+        :data="searchData"
+        tooltip-effect="dark"
+        style="width: 100%"
+        v-loading="loading"
+        @selection-change="handleSelectionChange" class="table" v-if="searchData.length>0">
+        <el-table-column
+          type="selection"
+          width="55">
+        </el-table-column>
+        <el-table-column
+          property="user_name"
+          label="姓名"
+          width="220">
+          <template slot-scope="scope">
+            <img :src='searchData[scope.$index].user_head' style="width:45px;height:45px;border-radius:50%;margin-right:10px;"/>
+            <span style="position:relative;top: -22px;">{{searchData[scope.$index].user_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="user_phone"
+          label="电话">
+        </el-table-column>
+        <el-table-column
+          prop="user_team"
+          label="团队">
+        </el-table-column>
+        <el-table-column
+          prop="create_time"
+          label="参与时间"
+          show-overflow-tooltip>
+        </el-table-column>
+      </el-table>
 
     <el-table
     ref="multipleTable"
@@ -17,7 +52,7 @@
     tooltip-effect="dark"
     style="width: 100%"
     v-loading="loading"
-    @selection-change="handleSelectionChange" class="table">
+    @selection-change="handleSelectionChange" class="table" v-else>
     <el-table-column
       type="selection"
       width="55">
@@ -68,11 +103,23 @@ export default {
         input4:'',
         multipleSelection: [],
         dataa: [],
+        searchData: [],
+        search: '',
         str: ''
       }
   },
 
   props: ['popData','loading','value'],
+
+  watch: {
+    search: function(n,o) {
+      if(n.length===0) {
+        this.searchData = '';
+        console.log(n);
+      }
+      console.log(n);
+    }
+  },
 
   methods: {
      toggleSelection(rows) {
@@ -89,6 +136,27 @@ export default {
       },
       sonhandelclick() {
         this.$emit('cancle');
+      },
+      Search() {
+      // search 是 v-model="search" 的 search
+      var search = this.search;
+      if (search) {
+        this.searchData = this.popData.filter(function(product) {
+          // 每一项数据
+          // console.log(product)
+          return Object.keys(product).some(function(key) {
+            // 每一项数据的参数名
+            // console.log(key)
+            return (
+              String(product[key])
+                // toLowerCase() 方法用于把字符串转换为小写。
+                .toLowerCase()
+                // indexOf() 方法可返回某个指定的字符串值在字符串中首次出现的位置。
+                .indexOf(search) > -1
+            );
+          });
+        });
+      }
       },
       sure() {
         this.dataa = [];

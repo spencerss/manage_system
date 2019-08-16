@@ -122,7 +122,6 @@ import pop from '@/components/pop'
             if(msg === '查询成功') {
                 // this.popData = [];
                 ress.data.data.data.forEach((item,index,array) => {
-                  console.log(array);
                   if(array[index].status === 0){
                   this.data.push(array[index]);
                   this.popData = this.data;
@@ -167,7 +166,8 @@ import pop from '@/components/pop'
                   var msg = res.data.msg;
                   if(msg === '查询成功') {
                   this.tableData = res.data.data.data;
-                  }                
+                  console.log(this.tableData)
+                  }            
                   this.loading_d = false;
               });
           }
