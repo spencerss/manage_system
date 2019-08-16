@@ -89,22 +89,7 @@ import pop from '@/components/pop'
         pageSize: 20,
         checkList: [''],
         res: {},
-        options: [{
-          value: 1,
-          label: 1
-        }, {
-          value: 2,
-          label: 2
-        }, {
-          value: 3,
-          label: 3
-        }, {
-          value: 4,
-          label: 4
-        }, {
-          value: 5,
-          label: 5
-        }],
+        options: [],
         value: 1,
         tableData: [{ 
           user_name: '',
@@ -231,9 +216,16 @@ import pop from '@/components/pop'
           }                    
           this.loading_d = false;
           });
-      
-
-    
+     this.axios.get('/dc/issue/getIssueIDList').then((resss)=>{
+          let msg = resss.data.msg;
+          if(msg === "查询成功"){
+            this.options=[];
+            this.po = resss.data.data;
+            this.po.forEach((item,index,array) => {            
+                this.options.push({value:array[index].id,lable:array[index].name});   
+                });
+          }
+      });
     }
   }
 

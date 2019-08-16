@@ -11,7 +11,7 @@
         </el-option>
       </el-select>
       <span class="word">期</span>
-      <span class="text">共参与{{res.total}}人</span>
+      <span class="text">共参与{{len}}人</span>
   </div>
   <el-table
     ref="singleTable"
@@ -45,6 +45,10 @@
       property="create_time"
       label="参与时间">
     </el-table-column>
+    <el-table-column
+      property="manifesto"
+      label="宣言">
+    </el-table-column>
   </el-table>
 
    <el-pagination
@@ -63,47 +67,18 @@
       return {
         currentPage: 1,
         pageSize: 20,
-        options: [{
-          value: '选项1',
-          label: '1'
-        }, {
-          value: '选项2',
-          label: '2'
-        }, {
-          value: '选项3',
-          label: '3'
-        }, {
-          value: '选项4',
-          label: '4'
-        }, {
-          value: '选项5',
-          label: '5'
-        }],
+        len:0,
+        options: [],
         value: 1,
-         options: [{
-          value: 1,
-          label: 1
-        }, {
-          value: 2,
-          label: 2
-        }, {
-          value: 3,
-          label: 3
-        }, {
-          value: 4,
-          label: 4
-        }, {
-          value: 5,
-          label: 5
-        }],
         tableData: [{ 
           user_name: '',
           user_phone: '',
           user_team: '',
-          create_time: ''
+          create_time: '',
+          manifesto:''
         }],
         loading_d:true,
-        res: {}
+        po:[]
       }
     },
     computed: {
@@ -124,6 +99,16 @@
           }                    
           this.loading_d = false;
           });
+       this.axios.get('/dc/issue/getIssueIDList').then((resss)=>{
+          let msg = resss.data.msg;
+          if(msg === "查询成功"){
+            this.options=[];
+            this.po = resss.data.data;
+            this.po.forEach((item,index,array) => {            
+                this.options.push({value:array[index].id,lable:array[index].name});   
+                });
+          }
+      });
     },
 
     watch: {
@@ -134,13 +119,12 @@
           pagination: 1,
           status: 0
           }).then((res)=>{
-            this.res = res.data.data;
+            this.len = res.data.data.data.length;
             var msg = res.data.msg;
             if(msg === '查询成功') {
                this.tableData = res.data.data.data;
            }            
-            this.loading_d = false;  
-            console.log(this.tableData)       
+            this.loading_d = false;       
         });
         }
       
