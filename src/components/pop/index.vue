@@ -115,9 +115,7 @@ export default {
     search: function(n,o) {
       if(n.length===0) {
         this.searchData = '';
-        console.log(n);
       }
-      console.log(n);
     }
   },
 

@@ -216,7 +216,7 @@ import pop from '@/components/pop'
           }                    
           this.loading_d = false;
           });
-     this.axios.get('/dc/issue/getIssueIDList').then((resss)=>{
+      this.axios.get('/dc/issue/getIssueIDList').then((resss)=>{
           let msg = resss.data.msg;
           if(msg === "查询成功"){
             this.options=[];
